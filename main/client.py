@@ -4,7 +4,7 @@ Created on October 9, 2019
 @author: Brad Bosak
 '''
 import socket
-from Crypto.Cipher import Salsa20
+from Crypto.Cipher import AES
 
 class Client:
     def clientToServer(self):
@@ -39,11 +39,19 @@ class Client:
         #Receive and print public key from CA
         dataFromCertificateAuthority = clientSocket.recv(1024).decode()
         print ("Message from CertificateAuthority is", dataFromCertificateAuthority)
-        
+        return dataFromCertificateAuthority
+
+    def encrypt(publicKey):
+        obj = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
+        message = "The answer is no"
+        ciphertext = obj.encrypt(message)
+        obj2 = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
+        print(obj2.decrypt(ciphertext))
+                
 def main():
     client = Client()
     serverName = client.clientToServer()
-    client.clientToCA(serverName)
-    
+    publicKey = client.clientToCA(serverName)
+    client.encrypt(publicKey)
  
 main()

@@ -5,8 +5,6 @@ Created on October 9, 2019
 '''
 import socket
 import sys
-# from certificateAuthority import CertificateAuthority
-# from client import Client
 
 class Server:
     def createServer(self):
