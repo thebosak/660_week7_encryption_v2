@@ -19,7 +19,7 @@ class CertificateAuthority:
         print ("CA socket is created, binded to port {0}, and listening".format(port))
         
         serverName = "BradsServer"
-        publicKey = "Brad is really cool"
+        publicKey = "Brad is really cool!!"
         
         while True:
             
