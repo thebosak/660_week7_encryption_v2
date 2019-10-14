@@ -4,7 +4,7 @@ Created on October 9, 2019
 @author: Brad Bosak
 '''
 import socket
-from Crypto.Cipher import AES
+# from Crypto.Cipher import AES
 
 class Client:
     def clientToServer(self):
@@ -41,17 +41,46 @@ class Client:
         print ("Message from CertificateAuthority is", dataFromCertificateAuthority)
         return dataFromCertificateAuthority
 
-    def encrypt(publicKey):
-        obj = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
-        message = "The answer is no"
-        ciphertext = obj.encrypt(message)
-        obj2 = AES.new('This is a key123', AES.MODE_CBC, 'This is an IV456')
-        print(obj2.decrypt(ciphertext))
+    # def encrypt(self, phrase, publicKey):
+    #     encryption = []
+    #     for i in range(len(phrase)):
+    #         x = (ord(phrase[i]) +
+    #             ord(publicKey[i])) % 26
+    #         x += ord('A') 
+    #         encryption.append(chr(x))
+    #     encryptedValue = "" . join(encryption)
+    #     print("the encrypted value is ", encryptedValue)
+    #     return(encryptedValue)
+    
+    # def decrypt(self, encryption, publicKey): 
+    #     originalPhrase = [] 
+    #     for i in range(len(encryption)): 
+    #         x = (ord(encryption[i]) - 
+    #             ord(publicKey[i]) + 26) % 26
+    #         x += ord('A') 
+    #         originalPhrase.append(chr(x))
+    #     decryptedValue = "" . join(originalPhrase)
+    #     print("the decrypted value is ", decryptedValue)
+    #     return(decryptedValue)
+
+    def encrypt(self, phrase, publicKey):
+        encryptedValue = []
+        for letter in phrase:
+            encryptedValue.append(ord(letter))
+        print("the encrypted value is ", encryptedValue)
+            
+    def decrypt(self, encryption, publicKey):
+        decryptedValue = []
+        for letter in encryption:
+            decryptedValue.append(chr(letter))
+        print("the decrypted value is ", decryptedValue)
+
                 
 def main():
     client = Client()
     serverName = client.clientToServer()
     publicKey = client.clientToCA(serverName)
-    client.encrypt(publicKey)
+    encryptedValue = client.encrypt("session cipher phrase", publicKey)
+    decryptedValue = client.decrypt(encryptedValue, publicKey)
  
 main()
