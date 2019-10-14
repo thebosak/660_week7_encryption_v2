@@ -4,7 +4,6 @@ Created on October 9, 2019
 @author: Brad Bosak
 '''
 import socket
-# from Crypto.Cipher import AES
 
 class Client:
     def clientToServer(self):
@@ -50,14 +49,6 @@ class Client:
             encryptedString = ''.join(encryptedValue)
         print("the encrypted string is ", encryptedString)
         return(encryptedString)
-            
-    def decrypt(self, encryptedValue, publicKey):
-        decryptedValue = []
-        for i in range(len(encryptedValue)):
-            x = ord(encryptedValue[i]) - ord(publicKey[i])
-            decryptedValue.append(chr(x))
-        print("the decrypted value is ", decryptedValue)
-        return(decryptedValue)
     
     def sendCipherPhraseToServer(self, encryptedValue):
         #Create client socket
@@ -78,12 +69,26 @@ class Client:
         return(serverAcknowledge)
 
 def main():
+    #Global variables
     cipherPhrase = "session cipher phrase"
+    cipherAck = "cipher acknowledged!!"
+    #instantiate client
     client = Client()
+    #get the name of the server from the server
     serverName = client.clientToServer()
+    #provide the CA with the server name and receive the public key
     publicKey = client.clientToCA(serverName)
+    #encrypt the cipher phrase with the public key
     encryptedString = client.encrypt(cipherPhrase, publicKey)
-    sendCipherPhraseToServer(encryptedString)
-    # decryptedValue = client.decrypt(encryptedValue, publicKey)
+    #send encrypted cipher phrase to server
+    serverAcknowledge = client.sendCipherPhraseToServer(encryptedString)
+    #encrypt the acknowledgment phrase
+    encryptedAck = client.encrypt(cipherAck, publicKey)
+    #if the server acknowledgment matches the encrypted acknowledgment, then give
+    #the all clear to begin transferring data
+    if serverAcknowledge == encryptedAck:
+        print("All clear to start transferring data")
+    else:
+        print("There was an issue")
  
 main()

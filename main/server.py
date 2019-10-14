@@ -4,7 +4,6 @@ Created on October 9, 2019
 @author: Brad Bosak
 '''
 import socket
-import sys
 
 class Server:
     def createServer(self):
@@ -14,9 +13,9 @@ class Server:
         #Variables
         publicKey = "Brad is really cool!!"
         cipherPhrase = "session cipher phrase"
+        cipherAck = "cipher acknowledged!!"
 
         #Define ports
-        caPort = 9501
         port = 9500
         
         serverSocket.bind(('', port))
@@ -38,32 +37,27 @@ class Server:
             if dataFromClient == "Name":
                 returnMessage = serverName
             else:
-                returnMessage = "Goodbye"
+                serverEncryptedString = getEncryptedCipherPhrase(cipherPhrase, publicKey)
+                if serverEncryptedString == dataFromClient:
+                    returnMessage = getEncryptedCipherPhrase(cipherAck, publicKey)
+                else:
+                    returnMessage = "Goodbye, phrase not recognized"
             #Print client message and send return message
             print ('Message from client is: ', dataFromClient)
             clientSocket.send(returnMessage.encode())
-
-            if dataFromClient != "Name":
-                serverEncryptedString = getEncryptedCipherPhrase(cipherPhrase, publicKey)
-                if serverEncryptedString == dataFromClient:
-                    returnMessage = "acknowledged"
-            else:
-                returnMessage = "I didn't understand the cipher phrase"
-            print('Message from client is: ', dataFromClient)
-            clientSocket.send(returnMessage.encode())
         
-    def getEncryptedCipherPhrase(self, phrase, publicKey):
-        print("public key is ", publicKey)
-        encryptedValue = []
-        for i in range(len(phrase)):
-            x = ord(phrase[i]) + ord(publicKey[i])
-            encryptedValue.append(chr(x))
-            encryptedString = ''.join(encryptedValue)
-        print("the encrypted value is ", encryptedString)
-        return(encryptedString)
+def getEncryptedCipherPhrase(phrase, publicKey):
+    print("public key is ", publicKey)
+    encryptedValue = []
+    for i in range(len(phrase)):
+        x = ord(phrase[i]) + ord(publicKey[i])
+        encryptedValue.append(chr(x))
+        encryptedString = ''.join(encryptedValue)
+    print("The encrypted value is ", encryptedString)
+    return(encryptedString)
     
 def main():
     server = Server()
     server.createServer()
- 
+
 main()
